@@ -45,7 +45,7 @@ def display_recommendations():
         st.dataframe(recommendations)
 
 # Function to handle track selection and playback
-def handle_track_selection():
+def handle_track_selection():loc
     if 'llm_rec_track_names' in st.session_state:
         selected_track_name = st.selectbox(
             'Select a track to play',
