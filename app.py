@@ -2,10 +2,11 @@ import streamlit as st
 import pandas as pd
 from spotify_utils import get_audio_features, play_track
 from llm import get_llm_recommendations
+import spotipy
 
 # Set Streamlit page configuration
 st.set_page_config(
-    page_title="Spotify Audio Features",
+    page_title="AutoSpotify",
     page_icon="🎵",
     layout="centered",
     initial_sidebar_state="auto"
@@ -21,11 +22,15 @@ def fetch_audio_features():
 def fetch_recommendations(user_input):
     if 'last_user_input' not in st.session_state or st.session_state.last_user_input != user_input:
         st.session_state.last_user_input = user_input
-        rec_tracks = get_llm_recommendations(user_input)
-        track_names, artist_names, track_ids = zip(*rec_tracks)
+        rec_tracks,function_calls_df = get_llm_recommendations(user_input)
+        try :
+            track_names, artist_names, track_ids = zip(*rec_tracks)
+        except:
+            print(rec_tracks)
         st.session_state.llm_rec_track_names = list(track_names)
         st.session_state.llm_rec_artist_names = list(artist_names)
         st.session_state.llm_rec_track_ids = list(track_ids)
+        st.session_state.function_calls_df = function_calls_df
 
 # Function to display recommendations
 def display_recommendations():
@@ -70,6 +75,8 @@ def handle_track_selection():
 
 # Run the app
 if __name__ == "__main__":
+    auth_manager = spotipy.oauth2.SpotifyOAuth(show_dialog=True)
+    sp = spotipy.Spotify(auth_manager=auth_manager)
     st.title('Spotify Audio Features')
 
     user_input = st.text_input("Enter your request for recommendations:")
@@ -77,5 +84,7 @@ if __name__ == "__main__":
         fetch_recommendations(user_input)
         display_recommendations()
         handle_track_selection()
+
+        st.dataframe(st.session_state.function_calls_df)
     
-    fetch_audio_features()
+    
