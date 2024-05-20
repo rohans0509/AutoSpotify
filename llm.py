@@ -145,7 +145,7 @@ def extract_function_calls_and_responses(chat_history):
     return function_df
 
 def get_llm_recommendations(user_input: str) -> Dict[str, str]:
-    context="Use available_genre_seeds to get list of genres if you need them. Use the kwargs in recommendations if you need them.\n"
+    context="Use only available_genre_seeds to get list of genres if you need them. Don't use genres not listed. Use the kwargs in recommendations if you need them.\n"
     model = genai.GenerativeModel(model_name='gemini-1.0-pro', tools=[recommendations, available_genre_seeds])
     chat = model.start_chat(enable_automatic_function_calling=True)
     response = chat.send_message(context+user_input)

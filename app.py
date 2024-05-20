@@ -77,7 +77,7 @@ def handle_track_selection():
 if __name__ == "__main__":
     auth_manager = spotipy.oauth2.SpotifyOAuth(show_dialog=True)
     sp = spotipy.Spotify(auth_manager=auth_manager)
-    st.title('Spotify Audio Features')
+    st.title('AutoSpotify')
 
     user_input = st.text_input("Enter your request for recommendations:")
     if user_input:
